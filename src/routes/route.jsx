@@ -3,6 +3,7 @@ import App from "@/src/App.jsx";
 import Timeline from "@/src/pages/Timeline.jsx";
 import Search from "@/src/pages/Search.jsx";
 import Notification from "@/src/pages/Notification.jsx";
+import User from "@/src/pages/User.jsx";
 
 export default function Router() {
   return (
@@ -11,6 +12,7 @@ export default function Router() {
       <Route path="/timeline" element={<Timeline />} />
       <Route path="/search" element={<Search />} />
       <Route path="/notification" element={<Notification />} />
+      <Route path="/user/:id" element={<User />} />
     </Routes>
   );
 }
