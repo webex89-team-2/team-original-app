@@ -5,7 +5,7 @@ function App() {
     <div>
       <h1>Hello World!</h1>
       <p>これは最初のページです。</p>
-      <Link to="/timeline">タイムライン</Link>
+      <Link to="/timeline">タイムラインaiueo</Link>
     </div>
   );
 }
