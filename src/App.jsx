@@ -9,19 +9,3 @@ import Router from "./routes/route.jsx"
 export default function App(){
   return <Router />;
 }
-
-// export default function App() {
-//   return (
-//     <BrowserRouter>
-//       <Routes>
-//         <Route path="/" element={<App />} />
-//         <Route path="/pages/SignIn" element={<SignIn />} />
-//         <Route path="/pages/SingUp" element={<SignUp />} />
-//         <Route path="/timeline" element={<Timeline />} />
-//         <Route path="/search" element={<Search />} />
-//         <Route path="/notification" element={<Notification />} />
-//         <Route path="/user/:id" element={<User />} />
-//       </Routes>
-//     </BrowserRouter>
-//   );
-// }
