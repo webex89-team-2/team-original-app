@@ -4,13 +4,13 @@
  
  // Firebaseコンソールからコピペする
  const firebaseConfig = {
-  apiKey: "AIzaSyB_VbiT0GuMVlsjDUnCTTmKNYZIhT2PL8k",
-  authDomain: "webex-89-team2.firebaseapp.com",
-  projectId: "webex-89-team2",
-  storageBucket: "webex-89-team2.firebasestorage.app",
-  messagingSenderId: "687136905352",
-  appId: "1:687136905352:web:4f7be89300d651d3e5a73d",
-  measurementId: "G-8HMM27Y3MK"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
  };
  
  const app = initializeApp(firebaseConfig);

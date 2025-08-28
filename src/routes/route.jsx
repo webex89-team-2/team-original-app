@@ -1,11 +1,3 @@
-// import { Route, Routes } from "react-router";
-// import { Route, Routes } from "react-router-dom";
-// import App from "@/src/App.jsx";
-// import Timeline from "@/src/pages/Timeline.jsx";
-// import Search from "@/src/pages/Search.jsx";
-// import Notification from "@/src/pages/Notification.jsx";
-// import User from "@/src/pages/User.jsx";
-
 //Reactの書き方
 import {Routes, Route } from "react-router-dom";
 import Timeline from "../pages/Timeline.jsx";

@@ -1,14 +1,5 @@
-// import { signInWithEmailAndPassword } from "firebase/auth";
-// import "../styles/auth/sign-in.css";
-// import { useState } from "react";
-// import { auth } from "../firebase";
-// import {GoogleAuthProvider, signInWithPopup}from "../firebase";
-
-
-// import "../styles/auth/sign-in.css";
 import { useState } from "react";
 import{ Link, useNavigate } from "react-router-dom";
-// import{BrowserRouter} from "react-router"
 import{auth} from "../firebase";
 import{
   signInWithEmailAndPassword,

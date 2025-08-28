@@ -4,17 +4,6 @@ import{Link} from "react-router-dom";
 import { createUserWithEmailAndPassword, GoogleAuthProvider } from "firebase/auth";
 import { auth } from "../firebase";
 
-// import React from "react";
-// import {useState} from "react";
-// // import "../styles/auth/sign-in.css";
-// import { auth } from "../firebase";
-// import{
-//     createUserWithEmailAndPassword,
-//     GoogleAuthProvider,
-//     signInWithPopup,
-// } from "firebase/auth";
-
-
 export default function SignUp(){
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
