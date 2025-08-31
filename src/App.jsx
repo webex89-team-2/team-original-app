@@ -1,13 +1,9 @@
-import { Link } from "react-router";
+import { useState } from "react";
+import CalendarHeader from "./pages/CalendarHeader";
+import CalendarTable from "./pages/CalendarTable";
 
-function App() {
-  return (
-    <div>
-      <h1>Hello World!</h1>
-      <p>これは最初のページです。</p>
-      <Link to="/timeline">タイムライン</Link>
-    </div>
-  );
+import Calendar from "./pages/Calendar";
+
+export default function App() {
+  return <Calendar />;
 }
-
-export default App;
