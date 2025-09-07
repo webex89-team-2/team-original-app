@@ -1,9 +1,7 @@
-import { useState } from "react";
-import CalendarHeader from "./pages/CalendarHeader";
-import CalendarTable from "./pages/CalendarTable";
+import React from "react";
 
-import Calendar from "./pages/Calendar";
+import { Link } from "react-router-dom";
 
 export default function App() {
-  return <Calendar />;
+  return <Link to="/calendar">カレンダー</Link>;
 }
