@@ -4,6 +4,7 @@ import Timeline from "@/src/pages/Timeline.jsx";
 import Search from "@/src/pages/Search.jsx";
 import Notification from "@/src/pages/Notification.jsx";
 import User from "@/src/pages/User.jsx";
+import Mypage from "../pages/Mypage.jsx";
 
 export default function Router() {
   return (
@@ -13,6 +14,7 @@ export default function Router() {
       <Route path="/search" element={<Search />} />
       <Route path="/notification" element={<Notification />} />
       <Route path="/user/:id" element={<User />} />
+      <Route path="/mypage" element={<Mypage />} />
     </Routes>
   );
 }

@@ -1,13 +1,12 @@
-import { Link } from "react-router";
+import Router from "./routes/route.jsx"
+import { Link } from "react-router-dom";
 
-function App() {
+export default function App(){
   return (
-    <div>
-      <h1>Hello World!</h1>
-      <p>これは最初のページです。</p>
-      <Link to="/timeline">タイムライン</Link>
-    </div>
-  );
+  <>
+  <Link to="/mypage">
+  MYPAGE
+  </Link>
+  </>
+  )
 }
-
-export default App;
