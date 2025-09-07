@@ -6,6 +6,7 @@ import Notification from "../pages/Notification.jsx";
 import User from "../pages/User.jsx";
 import SignIn from "../pages/SignIn.jsx";
 import SignUp from "../pages/SignUp.jsx";
+import Calendar from "../pages/CalendarView.jsx";
 import Mypage from "../pages/Mypage.jsx";
 
 export default function Router() {
@@ -19,6 +20,7 @@ export default function Router() {
       <Route path="/search" element={<Search />} />
       <Route path="/notification" element={<Notification />} />
       <Route path="/user/:id" element={<User />} />
+      <Route path="/calendar" element={<Calendar />} />
     </Routes>
   );
 }

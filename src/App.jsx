@@ -4,7 +4,7 @@ import Timeline from "@/src/pages/Timeline.jsx";
 import Search from "@/src/pages/Search.jsx";
 import Notification from "@/src/pages/Notification.jsx";
 import User from "@/src/pages/User.jsx";
-import Router from "./routes/route.jsx"
+import Router from "@/src/routes/route.jsx"
 
 export default function App(){
   return <Router />;
