@@ -37,7 +37,7 @@ const handleDeleteList = (idToDeleteList) => {
 // firebaseにデータを保存する関数
 // const addPost = async () {
 //   const docRef = await addDoc(collection(db, "lists"), {
-//     text: "",
+//     text: "newListTitle",
 //   })
 
 //   const newLists = [
