@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Card } from "./Card";
-import "../css/Trello.css";
 
 export function List({ title, items }) {
   const [cards, setCards] = useState([

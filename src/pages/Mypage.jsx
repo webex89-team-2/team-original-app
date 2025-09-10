@@ -1,7 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { BrowserRouter } from "react-router";
-import "../component/Trello.css";
 import { Header } from "../component/Header";
 import { List } from "../component/List";
 import { useState, useEffect } from "react";
@@ -145,7 +144,5 @@ const Mypage = () => {
     </>
   );
 };
-
-export default Mypage;
 
 export default Mypage;
