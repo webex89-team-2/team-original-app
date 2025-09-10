@@ -1,34 +1,34 @@
 import React from "react";
-import{ Link, useNavigate } from "react-router-dom";
-import{BrowserRouter} from "react-router"
-import "../component/Trello.css"
-import { Header } from "../component/Header"
-import { List } from "../component/List"
-import { useState, useEffect } from "react"
-import { collection, getDocs } from "firebase/firestore"
-import { db } from "../firebase"
+import { Link, useNavigate } from "react-router-dom";
+import { BrowserRouter } from "react-router";
+import "../component/Trello.css";
+import { Header } from "../component/Header";
+import { List } from "../component/List";
+import { useState, useEffect } from "react";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../firebase";
 
 const Mypage = () => {
-    const  navigate = useNavigate();
-    
-    // 以下、データベース関連
+  const navigate = useNavigate();
 
-//firebaseにデータを保存する関数
-// const addPost = async () => {
-//   const docRef = await addDoc(collection(db, "posts"), {
-//     text: "",
-//   })
+  // 以下、データベース関連
 
-//   const newPosts = [
-//     ...posts,
-//     {id: docRef.id, text: ""},
-//   ]
-//   setPosts(newPosts)
-// }
+  //firebaseにデータを保存する関数
+  // const addPost = async () => {
+  //   const docRef = await addDoc(collection(db, "posts"), {
+  //     text: "",
+  //   })
 
-const [memos, setMemos] = useState([])
+  //   const newPosts = [
+  //     ...posts,
+  //     {id: docRef.id, text: ""},
+  //   ]
+  //   setPosts(newPosts)
+  // }
 
-   useEffect(() => {
+  const [memos, setMemos] = useState([]);
+
+  useEffect(() => {
     // データを取得する関数
     const getFoods = async () => {
       try {
@@ -43,17 +43,21 @@ const [memos, setMemos] = useState([])
           const { location, name, amount, expiresAt } = food;
 
           // 変換された日付を計算
-          const expirationDate = Math.ceil((new Date(expiresAt.toDate()) - new Date()) / (1000 * 60 * 60 * 24));
+          const expirationDate = Math.ceil(
+            (new Date(expiresAt.toDate()) - new Date()) / (1000 * 60 * 60 * 24)
+          );
 
           // 既存の保管場所を探す
-          let storageGroup = acc.find(memo => memo.storageLocation === location);
+          let storageGroup = acc.find(
+            (memo) => memo.storageLocation === location
+          );
 
           // 存在しない場合は新しいグループを作成
           if (!storageGroup) {
             storageGroup = {
               id: location, // locationをidとして使用
               storageLocation: location,
-              items: []
+              items: [],
             };
             acc.push(storageGroup);
           }
@@ -69,7 +73,6 @@ const [memos, setMemos] = useState([])
         }, []);
 
         setMemos(newMemos);
-
       } catch (error) {
         console.error("Error fetching documents: ", error);
       }
@@ -77,8 +80,6 @@ const [memos, setMemos] = useState([])
 
     getFoods();
   }, []); // 依存配列は空のまま
-
-  
 
   // const [memos, setMemos] = useState ([
   //   {
@@ -104,55 +105,45 @@ const [memos, setMemos] = useState([])
   //   },
   // ])
 
- 
+  // const [newListTitle, setNewListTitle] = useState("")
 
+  // // リスト追加ボタン
+  // const handleAddList = () => {
+  //   if(!newListTitle) return
+  //   setLists([...lists, {id: crypto.randomUUID(), title: newListTitle}])
+  //   setNewListTitle("")
+  // }
 
+  // // リスト削除ボタン
+  // const handleDeleteList = (idToDeleteList) => {
+  //   setLists(lists.filter((list) => list.id !== idToDeleteList))
+  // }
 
+  return (
+    <>
+      <Header />
+      <button onClick={() => navigate("/signin")}>ログアウト</button>
+      <div className="main-container">
+        {memos.map((l) => (
+          <div className="list-container" key={l.id}>
+            <List title={l.storageLocation} items={l.items} />
+            {/* <button onClick={() => handleDeleteList(l.id)}>リスト削除</button> */}
+            <button>リスト削除</button>
+          </div>
+        ))}
 
-// const [newListTitle, setNewListTitle] = useState("")
-
-// // リスト追加ボタン
-// const handleAddList = () => {
-//   if(!newListTitle) return
-//   setLists([...lists, {id: crypto.randomUUID(), title: newListTitle}])
-//   setNewListTitle("")
-// }
-
-// // リスト削除ボタン
-// const handleDeleteList = (idToDeleteList) => {
-//   setLists(lists.filter((list) => list.id !== idToDeleteList))
-// }
-
-
-return (
-<>
-  <Header />
-  <button onClick = {() => navigate("/signin")}>ログアウト</button>
-  <div className = "main-container">
-     {memos.map((l) => (
-      <div className = "list-container" key = {l.id}>
-        <List 
-        title = {l.storageLocation} 
-        items = {l.items}
+        <input
+          type="text"
+          placeholder="新しいリスト"
+          className="new-list"
+          // value = {newListTitle}
+          // onChange = {(e) => setNewListTitle(e.target.value)}
         />
-        {/* <button onClick={() => handleDeleteList(l.id)}>リスト削除</button> */}
-        <button>リスト削除</button>
+        {/* <div className = "input-button" onClick = {handleAddList}>追加</div> */}
+        <div className="input-button">追加</div>
       </div>
-     ))}
-    
-    <input
-  type = "text"
-  placeholder = "新しいリスト"
-  className = "new-list"
-  // value = {newListTitle}
-  // onChange = {(e) => setNewListTitle(e.target.value)}
-  />
-  {/* <div className = "input-button" onClick = {handleAddList}>追加</div> */}
-  <div className = "input-button" >追加</div>
-  </div>
+    </>
+  );
+};
 
-</>
-)
-}
-
-export default Mypage
+export default Mypage;
