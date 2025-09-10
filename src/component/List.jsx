@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Card } from "./Card";
-import "../css/Trello.css";
 
-export function List({ title }) {
+export function List({ title, items }) {
   const [cards, setCards] = useState([
     { id: crypto.randomUUID(), text: "じゃがいも", number: 1, dead: 1 },
     { id: crypto.randomUUID(), text: "にんじん", number: 2, dead: 2 },
@@ -42,8 +41,12 @@ export function List({ title }) {
       </div>
 
       <div className="cards-container">
-        {cards.map((card) => (
-          <Card key={card.id} card={card} handleDeleteCard={handleDeleteCard} />
+        {items.map((item) => (
+          <Card
+            key={crypto.randomUUID()}
+            card={item}
+            handleDeleteCard={handleDeleteCard}
+          />
         ))}
       </div>
 
