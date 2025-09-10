@@ -147,3 +147,5 @@ const Mypage = () => {
 };
 
 export default Mypage;
+
+export default Mypage;
