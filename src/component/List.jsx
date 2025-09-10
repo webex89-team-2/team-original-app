@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Card } from "./Card"
 
-export function List({ title }) {
+export function List({ title, items }) {
   const [cards, setCards] = useState([
     {id: crypto.randomUUID(), text: "じゃがいも", number: 1, dead: 1},
     {id: crypto.randomUUID(), text: "にんじん", number: 2, dead: 2},
@@ -40,10 +40,10 @@ return (
   </div>
 
   <div className = "cards-container">
-    {cards.map((card) => (
+    {items.map((item) => (
       <Card 
-      key = {card.id}
-      card = {card} 
+      key = {crypto.randomUUID()}
+      card = {item} 
       handleDeleteCard = {handleDeleteCard}/>
     ))}
   </div>
