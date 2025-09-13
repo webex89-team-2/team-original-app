@@ -1,13 +1,11 @@
-import { Link } from "react-router";
+import { Route, Routes } from "react-router-dom";
+// import App from "@/src/App.jsx";
+import Timeline from "@/src/pages/Timeline.jsx";
+import Search from "@/src/pages/Search.jsx";
+import Notification from "@/src/pages/Notification.jsx";
+import User from "@/src/pages/User.jsx";
+import Router from "@/src/routes/route.jsx";
 
-function App() {
-  return (
-    <div>
-      <h1>Hello World!</h1>
-      <p>これは最初のページです。</p>
-      <Link to="/timeline">タイムラインaiueo</Link>
-    </div>
-  );
+export default function App() {
+  return <Router />;
 }
-
-export default App;
