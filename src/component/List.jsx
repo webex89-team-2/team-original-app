@@ -73,6 +73,8 @@ export function List({ title, items }) {
             value={inputDead}
             onChange={(e) => setInputDead(e.target.value)}
           />
+          {/* 消費期限をdateに */}
+          <input type="date" placeholder="消費期限（日）" required />
           <div className="input-button" onClick={handleAddCard}>
             追加
           </div>
