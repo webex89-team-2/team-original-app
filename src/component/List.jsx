@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Card } from "./Card";
 import "../css/Trello1.css";
 
-export function List({ title }) {
+
+export function List({ title, items }) {
   const [cards, setCards] = useState([
     { id: crypto.randomUUID(), text: "じゃがいも", number: 1, dead: 1 },
     { id: crypto.randomUUID(), text: "にんじん", number: 2, dead: 2 },
@@ -42,8 +43,12 @@ export function List({ title }) {
       </div>
 
       <div className="cards-container">
-        {cards.map((card) => (
-          <Card key={card.id} card={card} handleDeleteCard={handleDeleteCard} />
+        {items.map((item) => (
+          <Card
+            key={crypto.randomUUID()}
+            card={item}
+            handleDeleteCard={handleDeleteCard}
+          />
         ))}
       </div>
 
@@ -70,6 +75,8 @@ export function List({ title }) {
             value={inputDead}
             onChange={(e) => setInputDead(e.target.value)}
           />
+          {/* 消費期限をdateに */}
+          <input type="date" placeholder="消費期限（日）" required />
           <div className="input-button" onClick={handleAddCard}>
             追加
           </div>
