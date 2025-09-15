@@ -91,7 +91,7 @@ header {
 .card.glay{
   position: relative;
   padding: 4px;
-  background-color: #333333;
+  background-color: #666666;
   border-radius: 4px;
   box-shadow: 0 1px 0 #ccc;
 }

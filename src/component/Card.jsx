@@ -5,7 +5,7 @@ export function Card({ card, handleDeleteCard }) {
   //消費期限による色の変化
   let cardClass = "card"
   if(card.expirationDate <= -1){ // もし消費期限が0日以内ならば
-    cardClass += " red" // cardClassにredを追加する
+    cardClass += " glay" // cardClassにredを追加する
   }else if(card.expirationDate <= 1){ // もし消費期限が1日以内ならば
     cardClass += " red" // cardClassにredを追加する
   }else if(card.expirationDate <= 3){
