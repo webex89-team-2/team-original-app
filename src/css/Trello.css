@@ -108,9 +108,21 @@ header {
 .card .text {
   overflow-x: hidden;
 }
-.card:hover {
+/* .card:hover {
   background-color: #edeff0;
   border-bottom-color: #d6dadc;
+} */
+ .card.red:hover {
+  background-color: #ffe5e5;
+  /* border-bottom-color: #d6dadc; */
+}
+.card.yellow:hover {
+  background-color: #fff9d9;
+  /* border-bottom-color: #d6dadc; */
+}
+.card.glay:hover {
+  background-color: #888888;
+  /* border-bottom-color: #d6dadc; */
 }
 .card:hover .delete {
   position: absolute;
@@ -158,6 +170,10 @@ header {
   cursor: pointer;
   user-select: none;
 }
+.input-button:hover{
+    background-color: #4cd964;
+}
+
 .input-container .input-button:active {
   transform: translateY(2px);
 }
