@@ -5,7 +5,7 @@ export const Header = () => {
   const navigate = useNavigate();
   return (
     <header className="header">
-      <Link to="/" className="logo">
+      <Link to="/mypage" className="logo">
         My App
       </Link>
       <nav>

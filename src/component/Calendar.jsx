@@ -33,14 +33,14 @@ export default function Calendar() {
   };
 
   return (
-    <div>
+    <div className="w-full max-w-4xl bg-white rounded-2xl shadow-lg p-6 relative z-10">
       <CalendarHeader
         year={currentYear}
         month={currentMonth}
         onPrev={prevMonth}
         onNext={nextMonth}
       />
-      <CalendarTable dates={dates} />
+      <CalendarTable dates={dates} year={currentYear} month={currentMonth} />
     </div>
   );
 }

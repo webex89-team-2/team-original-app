@@ -1,36 +1,70 @@
+/* ヘッダー共通スタイル */
 .header {
   background-color: #0064a5;
   color: #fff;
-  padding: 12px;
-  font-size: 1.2em;
+  padding: 12px 24px;
+  font-size: 1.5em;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
+  height: 100px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 立体感 */
+  position: relative;
+  z-index: 1000;
 }
+
+/* ロゴ */
 .logo {
   font-weight: bold;
-  font-size: 1.3em;
+  font-size: 1.8em;
   color: #fff;
   text-decoration: none;
 }
+
+/* ヘッダー共通スタイル */
+.header {
+  background-color: #0064a5;
+  color: #fff;
+  padding: 12px 24px;
+  font-size: 1.5em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 100px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 立体感 */
+  position: relative;
+  z-index: 1000;
+}
+
+/* ロゴ */
+.logo {
+  font-weight: bold;
+  font-size: 1.8em;
+  color: #fff;
+  text-decoration: none;
+}
+
 .nav-links {
   list-style: none;
   display: flex;
-  gap: 16px;
+  gap: 20px;
   margin: 0;
   padding: 0;
 }
-.nav-links li {
-  display: flex;
-  align-items: center;
-}
-.nav-links a {
-  color: #fff;
-  text-decoration: none;
-}
+
+.nav-links a,
 .nav-links button {
-  background: none;
-  border: none;
-  color: #fff;
-  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%; /* ヘッダーの高さに合わせる */
+  transform: translateY(0); /* 初期位置を統一 */
+  transition: background-color 0.2s, transform 0.2s;
+}
+.nav-links a:hover,
+.nav-links button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
 }

@@ -1,6 +1,17 @@
+
 import { useState } from "react"; // useStateを追加
+import "../css/Trello.css";
 
 export function Card({ card, onDeleteCard, onUpdateCard }) {
+  
+  //消費期限による色の変化
+  let cardClass = "card"
+  if(card.expirationDate <= 1){ // もし消費期限が1日以内ならば
+    cardClass += " red" // cardClassにredを追加する
+  }else if(card.expirationDate <= 3){
+    cardClass += " yellow" //cardClassにyellowを追加する
+  }
+  
   const [isEditing, setIsEditing] = useState(false); // 編集モードのステート
   const [editedName, setEditedName] = useState(card.name);
   const [editedAmount, setEditedAmount] = useState(card.amount);
@@ -51,6 +62,7 @@ export function Card({ card, onDeleteCard, onUpdateCard }) {
       ) : (
         // 通常表示モード
         <>
+        <div className={cardClass}>
           <div className="text">{card.name}</div>
           <div className="number">個数：{card.amount}個</div>
           <div className="deadline">
@@ -64,8 +76,9 @@ export function Card({ card, onDeleteCard, onUpdateCard }) {
           <div className="delete" onClick={() => onDeleteCard(card.id)}>
             削除
           </div>
+          </div>
         </>
       )}
-    </div>
+      </div>
   );
 }
