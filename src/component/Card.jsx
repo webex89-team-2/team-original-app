@@ -1,4 +1,4 @@
-import "../css/Trello1.css";
+import "../css/Trello.css";
 
 export function Card({ card, handleDeleteCard }) {
 
