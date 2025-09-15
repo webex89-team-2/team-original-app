@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { BrowserRouter } from "react-router";
 import { Header } from "../component/Header";
 import { List } from "../component/List";
+import "../css/Trello.css"
 import { useState, useEffect } from "react";
 // import { collection, getDocs } from "firebase/firestore";
 
