@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Card } from "./Card";
-import "../css/Trello1.css";
-
+import "../css/Trello.css";
 
 export function List({
   title,
@@ -17,13 +16,17 @@ export function List({
 
   // 追加ボタン;
   const onAddCard = () => {
-    if (!inputValue) return;
+    // 入力値が一つでも空であれば処理を中断
+    if (!inputValue || !inputNumber || !inputDead) {
+      return;
+    }
     const newItem = {
       id: crypto.randomUUID(),
       name: inputValue,
-      amount: Number(inputNumber) || 1,
-      expirationDate: Number(inputDead) || 1,
+      amount: Number(inputNumber),
+      expirationDate: Number(inputDead),
     };
+
     // Mypage.jsxで渡された関数を呼び出す
     handleAddCard(listId, newItem);
     setInputValue("");
