@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { BrowserRouter } from "react-router";
 import { Header } from "../component/Header";
 import { List } from "../component/List";
-import "../css/Trello.css"
+import "../css/Trello.css";
 import { useState, useEffect } from "react";
 import {
   collection,
@@ -18,6 +18,8 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 
+import { getAuth, onAuthStateChanged } from "firebase/auth"; //現在ログイン中のユーザーのuserIDを取得できるようにする
+
 const Mypage = () => {
   const navigate = useNavigate();
 
@@ -25,81 +27,28 @@ const Mypage = () => {
 
   const [memos, setMemos] = useState([]);
 
-  //firebase用の配列
-  const [form, setForm] = useState({
-    name: "",
-    amount: "",
-    location: "常温保管庫", // 初期値はお好みで
-    expiresAt: "", // yyyy-mm-dd（<input type="date">）
-  });
-  //入力の認識
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
-  const handleAddFood = async (e) => {
-    e.preventDefault();
-
-    // 1) 値を取り出し & かんたんバリデーション
-    const name = form.name.trim();
-    const location = form.location.trim();
-    const amountNum = Number(form.amount);
-    const dateStr = form.expiresAt; // "YYYY-MM-DD"（<input type="date"> の値）
-
-    if (!name) {
-      alert("食材名を入力してください");
-      return;
-    }
-    if (!location) {
-      alert("保管場所を選択してください");
-      return;
-    }
-    if (!Number.isFinite(amountNum) || amountNum <= 0) {
-      alert("個数は1以上で入力してください");
-      return;
-    }
-    if (!dateStr) {
-      alert("消費期限日を選択してください");
-      return;
-    }
-
-    // 2) 期限日を JS Date に変換 → Firestore Timestamp へ
-    //    ※ その日の 00:00 扱い。23:59:59 にしたいなら `${dateStr}T23:59:59`
-    const expiresDate = new Date(dateStr);
-
-    // 3) Firestore に追加
-    //    フィールド：name, amount, location, expiresAt(Timestamp), createdAt(serverTimestamp)
-    try {
-      await addDoc(collection(db, "user1"), {
-        name,
-        amount: amountNum,
-        location,
-        expiresAt: Timestamp.fromDate(expiresDate),
-        createdAt: serverTimestamp(),
-      });
-
-      alert("登録しました！");
-
-      // 4) 入力欄クリア
-      setForm({
-        name: "",
-        amount: "",
-        location: "常温保管庫",
-        expiresAt: "",
-      });
-
-      // （最小構成のため、ここでは一覧の再取得は行いません）
-    } catch (err) {
-      console.error("Error adding document: ", err);
-      alert("登録に失敗しました。コンソールを確認してください。");
-    }
-  };
+  const [uid, setUid] = useState(null); //userIDの変数
 
   useEffect(() => {
+    const auth = getAuth();
+    // 監視開始：初回ロード時に現在のユーザー、以後は変化ごとに呼ばれる
+    const unSub = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUid(user.uid); // userIDを保存
+      } else {
+        navigate("/signin"); // 未ログイン → サインインへ、ログインしていてもロード中など未ログインとして扱われる場合あり
+      }
+    });
+    return () => unSub(); // クリーンアップ（監視解除）
+  }, [navigate]);
+
+  useEffect(() => {
+    if (!uid) return; //userIDが決まるまで実行しない
     // データを取得する関数
     const getFoods = async () => {
       try {
-        const res = await getDocs(collection(db, "user1"));
+        //const res = await getDocs(collection(db, "user1"));
+        const res = await getDocs(collection(db, "users", uid, "foods"));
         const data = res.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
@@ -147,7 +96,8 @@ const Mypage = () => {
     };
 
     getFoods();
-  }, []); // 依存配列は空のまま
+    //}, []); // 依存配列は空のまま
+  }, [uid]); // ★ uid が入った/変わったときに実行
 
   // memosのデータ形は次のようになっている
   // const [memos, setMemos] = useState ([
@@ -190,7 +140,8 @@ const Mypage = () => {
       });
 
       // 2. 新しいリスト用の空のアイテムを`user1`コレクションにも追加
-      await addDoc(collection(db, "user1"), {
+      //await addDoc(collection(db, "user1")
+      await addDoc(collection(db, "users", uid, "foods"), {
         location: newListTitle,
         name: "", // 空のアイテムとして追加
         amount: 0,
@@ -234,7 +185,8 @@ const Mypage = () => {
       // 4. 削除対象のリストに紐づく食物アイテムを検索
       // リスト名を動的に指定するように修正
       const q = query(
-        collection(db, "user1"),
+        //collection(db, "user1"),
+        collection(db, "users", uid, "foods"),
         where("location", "==", listToDelete.storageLocation)
       );
       const querySnapshot = await getDocs(q);
@@ -260,7 +212,8 @@ const Mypage = () => {
     try {
       // 1. Firebaseに新たなドキュメントを追加
       // listIdはどのlocationに追加するかを識別するために使用
-      const docRef = await addDoc(collection(db, "user1"), {
+      //const docRef = await addDoc(collection(db, "user1"),{
+      const docRef = await addDoc(collection(db, "users", uid, "foods"), {
         location: memos.find((memo) => memo.id === listId).storageLocation,
         name: newItem.name,
         amount: newItem.amount,
@@ -293,7 +246,8 @@ const Mypage = () => {
   const handleDeleteCard = async (listId, itemIdToDelete) => {
     try {
       // 1. Firebaseのドキュメントを削除
-      await deleteDoc(doc(db, "user1", itemIdToDelete));
+      //await deleteDoc(doc(db, "user1", itemIdToDelete));
+      await deleteDoc(doc(db, "users", uid, "foods", itemIdToDelete));
 
       // 2. 画面上のステートを更新
       setMemos((prevMemos) => {
@@ -316,7 +270,8 @@ const Mypage = () => {
   const handleUpdateCard = async (listId, updatedItem) => {
     try {
       // 1. Firebaseのドキュメントを更新
-      const foodRef = doc(db, "user1", updatedItem.id);
+      //const foodRef = doc(db, "user1", updatedItem.id);
+      const foodRef = doc(db, "users", uid, "foods", updatedItem.id);
       await updateDoc(foodRef, {
         name: updatedItem.name,
         amount: updatedItem.amount,
