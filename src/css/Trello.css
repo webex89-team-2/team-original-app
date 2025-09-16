@@ -88,6 +88,14 @@ header {
   box-shadow: 0 1px 0 #ccc;
 }
 
+.card.glay{
+  position: relative;
+  padding: 4px;
+  background-color: #666666;
+  border-radius: 4px;
+  box-shadow: 0 1px 0 #ccc;
+}
+
 
 
 .card:nth-of-type(n + 2) {
