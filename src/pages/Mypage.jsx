@@ -1,6 +1,5 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { BrowserRouter } from "react-router";
 import { Header } from "../component/Header";
 import { List } from "../component/List";
 import "../css/Trello.css";
@@ -17,16 +16,32 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../firebase";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const Mypage = () => {
   const navigate = useNavigate();
 
-  // 以下、データベース関連
-
   const [memos, setMemos] = useState([]);
   const [newListTitle, setNewListTitle] = useState("");
+  const [uid, setUid] = useState(null); // userIDの変数
 
   useEffect(() => {
+    const auth = getAuth();
+    // ユーザーのログイン状態を監視
+    const unSub = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUid(user.uid); // ログインしていればuidを保存
+      } else {
+        navigate("/signin"); // 未ログインの場合はサインインページへ遷移
+      }
+    });
+    return () => unSub(); // クリーンアップ（監視解除）
+  }, [navigate]);
+
+  useEffect(() => {
+    if (!uid) return; // uidが取得できるまで実行しない
+
+    // データを取得する関数
     const getFoodsAndLists = async () => {
       try {
         // 1. `lists`コレクションから保管場所のリストを取得
@@ -37,8 +52,8 @@ const Mypage = () => {
           items: [],
         }));
 
-        // 2. `user1`コレクションから食品アイテムを取得
-        const foodsRes = await getDocs(collection(db, "user1"));
+        // 2. ログインユーザーの`foods`コレクションから食品アイテムを取得
+        const foodsRes = await getDocs(collection(db, "users", uid, "foods"));
         const foodsData = foodsRes.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
@@ -66,33 +81,7 @@ const Mypage = () => {
     };
 
     getFoodsAndLists();
-  }, []);
-
-  // memosのデータ形は次のようになっている
-  // const [memos, setMemos] = useState ([
-  //   {
-  //     id: "refrigerator",
-  //     storageLocation: "冷蔵庫",
-  //     items: [
-  //       {
-  //         id: firebaseのid
-  //         name: "じゃがいも",
-  //         amount: 1,
-  //         expirationDate: 2
-  //       },
-  //       {
-  //         name: "にんじん",
-  //         amount: 2,
-  //         expirationDate: 2
-  //       },
-  //       {
-  //         name: "豚肉",
-  //         amount: 3,
-  //         expirationDate: 3
-  //       }
-  //     ]
-  //   },
-  // ])
+  }, [uid]); // uidが変わるたびにデータを再取得
 
   // リスト追加ボタン（Firebase反映版）
   const handleAddList = async () => {
@@ -104,15 +93,26 @@ const Mypage = () => {
         storageLocation: newListTitle,
       });
 
-      // 2. 画面上のステートを更新（空のアイテムを保持）
-      setMemos((prevMemos) => [
-        ...prevMemos,
-        {
-          id: docRef.id,
-          storageLocation: newListTitle,
-          items: [], // 空のアイテムを追加
-        },
-      ]);
+      // 2. 新しいリスト用の空のアイテムをユーザーの`foods`コレクションにも追加
+      await addDoc(collection(db, "users", uid, "foods"), {
+        location: newListTitle,
+        name: "",
+        amount: 0,
+        expiresAt: new Date(),
+        createdAt: new Date(),
+      });
+
+      // 3. 画面上のステートを更新
+      setMemos((prevMemos) => {
+        return [
+          ...prevMemos,
+          {
+            id: docRef.id,
+            storageLocation: newListTitle,
+            items: [],
+          },
+        ];
+      });
 
       setNewListTitle("");
     } catch (e) {
@@ -122,12 +122,10 @@ const Mypage = () => {
 
   // リスト削除ボタン（Firebase反映版）
   const handleDeleteList = async (idToDeleteList) => {
-    // リストを本当に削除するかの確認
     const result = window.confirm(
       "本当にこのリストを削除しますか？\n中の食材もすべて消えてしまいます！"
     );
 
-    // もしユーザが「キャンセル」を押したら、処理を中断する
     if (!result) {
       return;
     }
@@ -146,7 +144,7 @@ const Mypage = () => {
 
       // 4. 削除対象のリストに紐づく食物アイテムを検索
       const q = query(
-        collection(db, "user1"),
+        collection(db, "users", uid, "foods"),
         where("location", "==", listToDelete.storageLocation)
       );
       const querySnapshot = await getDocs(q);
@@ -171,7 +169,8 @@ const Mypage = () => {
   // カード追加ボタン（Firebase反映版）
   const handleAddCard = async (listId, newItem) => {
     try {
-      const docRef = await addDoc(collection(db, "user1"), {
+      // 1. Firebaseに新たなドキュメントを追加
+      const docRef = await addDoc(collection(db, "users", uid, "foods"), {
         location: memos.find((memo) => memo.id === listId).storageLocation,
         name: newItem.name,
         amount: newItem.amount,
@@ -180,6 +179,8 @@ const Mypage = () => {
         ),
         createdAt: new Date(),
       });
+
+      // 2. 画面上のステートを更新
       setMemos((prevMemos) => {
         return prevMemos.map((list) => {
           if (list.id === listId) {
@@ -200,7 +201,10 @@ const Mypage = () => {
   // カード削除ボタン（Firebase反映版）
   const handleDeleteCard = async (listId, itemIdToDelete) => {
     try {
-      await deleteDoc(doc(db, "user1", itemIdToDelete));
+      // 1. Firebaseのドキュメントを削除
+      await deleteDoc(doc(db, "users", uid, "foods", itemIdToDelete));
+
+      // 2. 画面上のステートを更新
       setMemos((prevMemos) => {
         return prevMemos.map((list) => {
           if (list.id === listId) {
@@ -220,7 +224,8 @@ const Mypage = () => {
   // カード修正ボタン（Firebase反映版）
   const handleUpdateCard = async (listId, updatedItem) => {
     try {
-      const foodRef = doc(db, "user1", updatedItem.id);
+      // 1. Firebaseのドキュメントを更新
+      const foodRef = doc(db, "users", uid, "foods", updatedItem.id);
       await updateDoc(foodRef, {
         name: updatedItem.name,
         amount: updatedItem.amount,
@@ -229,6 +234,8 @@ const Mypage = () => {
             updatedItem.expirationDate * 24 * 60 * 60 * 1000
         ),
       });
+
+      // 2. 画面上のステートを更新
       setMemos((prevMemos) => {
         return prevMemos.map((list) => {
           if (list.id === listId) {
