@@ -75,7 +75,10 @@ export function List({
             placeholder="個数"
             className="input-todo"
             value={inputNumber}
-            onChange={(e) => setInputNumber(e.target.value)}
+            onChange={(e) => {
+              const value = Number(e.target.value);
+              setInputNumber(value < 0 ? 0 : value); // ★ 0未満なら0に補正
+            }}
           />
           <input
             type="number"
