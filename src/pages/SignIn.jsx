@@ -19,7 +19,7 @@ export default function SignIn() {
       alert("Googleログインに成功しました");
       navigate("/mypage");
     } catch (error) {
-      alert(error.message);
+      alert("ログインに失敗しました");
     }
   };
 
@@ -30,7 +30,7 @@ export default function SignIn() {
       alert("ログインしました");
       navigate("/mypage");
     } catch (error) {
-      alert(error.message);
+      alert("ログインに失敗しました");
     }
   };
 
