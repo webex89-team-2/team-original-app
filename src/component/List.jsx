@@ -75,14 +75,26 @@ export function List({
             placeholder="個数"
             className="input-todo"
             value={inputNumber}
-            onChange={(e) => setInputNumber(e.target.value)}
+            onChange={(e) => {
+              const value = Number(e.target.value);
+              setInputNumber(value < 0 ? 0 : value); // ★ 0未満なら0に補正
+            }}
           />
           <input
-            type="number"
+            type="date"
             placeholder="消費期限（日）"
             className="input-todo"
             value={inputDead}
-            onChange={(e) => setInputDead(e.target.value)}
+            onChange={(e) => {
+              const selectedDate = new Date(e.target.value); //入力した日付
+              const today = new Date(); //今日の日付
+              const diffDays = Math.ceil(
+                (selectedDate - today) / (1000 * 60 * 60 * 24)
+              );
+
+              //setInputDead(diffDays < 0 ? 0 : diffDays); // マイナスは0に補正
+              setInputDead(diffDays);
+            }}
           />
           <div className="input-button" onClick={onAddCard}>
             追加
