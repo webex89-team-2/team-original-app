@@ -1,6 +1,4 @@
-Trello.css
-
-* {
+Trello.css * {
   box-sizing: border-box;
 }
 body {
@@ -72,7 +70,7 @@ header {
   box-shadow: 0 1px 0 #ccc;
 }
 
-.card.red{
+.card.red {
   position: relative;
   padding: 4px;
   background-color: #ffcccc;
@@ -80,7 +78,7 @@ header {
   box-shadow: 0 1px 0 #ccc;
 }
 
-.card.yellow{
+.card.yellow {
   position: relative;
   padding: 4px;
   background-color: #fff3b0;
@@ -88,15 +86,13 @@ header {
   box-shadow: 0 1px 0 #ccc;
 }
 
-.card.glay{
+.card.glay {
   position: relative;
   padding: 4px;
   background-color: #666666;
   border-radius: 4px;
   box-shadow: 0 1px 0 #ccc;
 }
-
-
 
 .card:nth-of-type(n + 2) {
   margin-top: 8px;
@@ -163,4 +159,25 @@ header {
 }
 .list-footer {
   margin-top: 8px;
+}
+/* ドラッグ可能なリストだけを囲むエリア */
+.lists-droppable-area {
+  display: flex; /* この中身（リスト）を横並びにする */
+  gap: 8px;
+}
+
+/* リスト追加フォームのコンテナ */
+.add-list-form-container {
+  flex-shrink: 0; /* 縮まないようにする */
+  width: 320px; /* フォームの幅に合わせて調整 */
+  margin-left: 8px;
+}
+
+/* 既存の new-list と input-button のスタイルが適用されるように調整 */
+.add-list-form-container .new-list {
+  width: 100%;
+  margin: 0;
+}
+.add-list-form-container .input-button {
+  width: 100%;
 }
