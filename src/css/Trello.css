@@ -136,7 +136,7 @@ header,
   transition: transform 0.12s ease, background-color 0.12s;
 }
 .list-container > button:hover {
-  transform: translateY(-2px);
+  /* transform: translateY(-2px); */
   background-color: #b82936;
 }
 
@@ -175,12 +175,12 @@ header,
 /* テキスト類 */
 .card .text {
   font-weight: 700;
-  font-size: 1.05rem;
+  font-size: 1.5rem;
   color: #03294a;
 }
 .card .number,
 .card .deadline {
-  font-size: 0.9rem;
+  font-size: 1.2rem;
   color: #05305e;
 }
 
@@ -199,7 +199,7 @@ header,
 .card button {
   background-color: #007bff;
   color: #fff;
-  align-self: flex-start;
+  /* align-self: flex-start; */
 }
 .card button:hover {
   background-color: #005ecb;
@@ -210,11 +210,20 @@ header,
 .card .delete {
   background-color: #f44336;
   color: #fff;
-  align-self: flex-end;
+  /* align-self: flex-end; */
 }
 .card .delete:hover {
   background-color: #c62828;
+    transform: translateY(-2px);
 }
+
+.card-box {
+  display: flex;
+  align-items: center; /* ボタンのY位置を揃える */
+  gap: 8px;
+  margin-top: 6px;
+}
+
 
 /* 編集フォーム */
 .edit-form {
