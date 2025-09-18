@@ -110,15 +110,15 @@ header,
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-bottom: 10px;
-  margin-bottom: 8px;
+  padding-bottom: 8px;
+  margin-bottom: 6px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 .list-header .list-title,
 .list-container h2 {
-  font-size: 1.35rem;
+  font-size: 1.75rem;
   color: #00366b;
-  font-weight: 700;
+  font-weight: 1000;
 }
 
 /* リスト削除ボタン（下側） */
