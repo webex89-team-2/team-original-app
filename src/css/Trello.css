@@ -1,183 +1,328 @@
-Trello.css * {
+/* =============================
+   Trello.css — 全部まとめて
+   ※ そのまま上書きしてください
+   ============================= */
+
+/* --- リセット / 全体 --- */
+* {
   box-sizing: border-box;
 }
+html,
 body {
+  height: 100%;
   margin: 0;
-  overflow: hidden;
-  background-color: #0076c2;
-}
-header {
-  position: absolute;
-  top: 0px;
-  width: 100%;
-}
-.header-title {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 40px;
-  font-size: 1.5em;
-  background-color: #0064a5;
-  color: #7fb1d2;
-}
-.main-container {
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: flex-start;
-  width: 100vw;
-  height: 100vh;
-  padding: 52px 12px 12px 12px;
-  overflow-x: auto;
-  background-color: #0076c2;
-}
-.new-list {
-  height: 34px;
-  width: 320px;
-  max-width: 60vw;
-  padding: 0 10px;
-  margin: 8px 8px 0 12px;
-  border: none;
-  border-radius: 6px;
-  box-shadow: 0 1px 0 #ccc;
-  font-size: 14px;
-}
-.list-container {
-  min-width: 300px;
-  width: 300px;
-  padding: 8px;
-  border-radius: 4px;
-  background-color: #e2e4e6;
-}
-.list-container:nth-child(n + 2) {
-  margin-left: 8px;
-}
-.list-header {
-  height: 60px;
-  padding: 8px 0px 0px 4px;
-  font-weight: bold;
-  font-size: 0.9em;
-}
-.cards-container {
-  max-height: calc(100vh - 200px);
-  margin-top: 4px;
-  overflow-y: auto;
-}
-.card {
+  padding: 0;
+  font-family: "Noto Sans JP", sans-serif;
+  background-color: #cce0f5; /* ベースの淡い青 */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   position: relative;
-  padding: 4px;
-  background-color: #fff;
-  border-radius: 4px;
-  box-shadow: 0 1px 0 #ccc;
-}
-
-.card.red {
-  position: relative;
-  padding: 4px;
-  background-color: #ffcccc;
-  border-radius: 4px;
-  box-shadow: 0 1px 0 #ccc;
-}
-
-.card.yellow {
-  position: relative;
-  padding: 4px;
-  background-color: #fff3b0;
-  border-radius: 4px;
-  box-shadow: 0 1px 0 #ccc;
-}
-
-.card.glay {
-  position: relative;
-  padding: 4px;
-  background-color: #666666;
-  border-radius: 4px;
-  box-shadow: 0 1px 0 #ccc;
-}
-
-.card:nth-of-type(n + 2) {
-  margin-top: 8px;
-}
-.card:last-child {
-  margin-bottom: 1px;
-  word-wrap: break-word;
-}
-.card .text {
   overflow-x: hidden;
 }
-.card:hover {
-  background-color: #edeff0;
-  border-bottom-color: #d6dadc;
+
+body::before,
+body::after {
+  content: "";
+  position: fixed; /* スクロールしても画面に固定 */
+  border-radius: 50%;
+  pointer-events: none; /* クリックを邪魔しない */
+  z-index: 0; /* コンテンツより下、背景より上 */
+  filter: blur(30px);
+  mix-blend-mode: normal;
+  opacity: 0.95;
 }
-.card:hover .delete {
-  position: absolute;
-  bottom: 4px;
-  right: 4px;
-  z-index: 16;
-  opacity: 0.5;
-  color: #f00;
+
+/* 左上の大きな水玉 */
+body::before {
+  width: 560px;
+  height: 560px;
+  left: -180px;
+  top: -220px;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(2, 98, 207, 0.2) 0%,
+    rgba(2, 98, 207, 0.12) 40%,
+    rgba(2, 98, 207, 0.06) 100%
+  );
 }
-.card:hover .delete:after {
-  content: "削除";
+
+/* 右下の大きな水玉 */
+body::after {
+  width: 720px;
+  height: 720px;
+  right: -260px;
+  bottom: -260px;
+  background: radial-gradient(
+    circle at 70% 70%,
+    rgba(0, 123, 255, 0.16) 0%,
+    rgba(0, 123, 255, 0.1) 45%,
+    rgba(0, 123, 255, 0.04) 100%
+  );
 }
-.card:hover .delete:hover {
-  opacity: 1;
+
+/* ヘッダーとメインは水玉より上に */
+header,
+.Header,
+.header-title {
+  position: relative; /* header が absolute なら z-index のみ設定 */
+  z-index: 2;
+}
+
+/* --- メインコンテナ --- */
+.main-container {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: stretch;
+  overflow-x: auto; /* 横スクロール */
+  height: calc(100vh - 64px); /* ヘッダーの高さに合わせて調整 */
+  padding: 20px;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+}
+
+/* --- リスト群（横並び） --- */
+.lists-droppable-area {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: stretch;
+}
+
+/* 各リストコンテナ（画面1枚分） */
+.list-container {
+  flex: 0 0 100vw; /* ビューポート幅いっぱいに */
+  height: 100%;
+  background: rgba(255, 255, 255, 0.92); /* 透け感があり水玉見える */
+  border-radius: 16px;
+  padding: 24px;
+  box-sizing: border-box;
+  box-shadow: 0 10px 30px rgba(6, 37, 81, 0.12);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  min-width: 320px; /* 極端に狭くならないように */
+}
+
+/* リスト内の見出し */
+.list-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 10px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+.list-header .list-title,
+.list-container h2 {
+  font-size: 1.35rem;
+  color: #00366b;
+  font-weight: 700;
+}
+
+/* リスト削除ボタン（下側） */
+.list-container > button {
+  margin-top: 12px;
+  align-self: flex-end;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 10px;
+  background-color: #dc3545;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 12px rgba(220, 53, 69, 0.18);
+  transition: transform 0.12s ease, background-color 0.12s;
+}
+.list-container > button:hover {
+  transform: translateY(-2px);
+  background-color: #b82936;
+}
+
+/* --- カードコンテナ --- */
+.cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+  flex: 1 1 auto;
+  padding-right: 6px; /* スクロールバーと被らない余白 */
+}
+
+/* =============================
+   カードデザイン
+   ============================= */
+.card {
+  background-color: rgba(0, 123, 255, 0.12); /* 青みのある淡いカード */
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 8px;
+  box-shadow: 0 6px 14px rgba(4, 28, 66, 0.06);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  cursor: grab;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* drag state */
+.card:active {
+  transform: scale(1.02);
+  cursor: grabbing;
+}
+
+/* テキスト類 */
+.card .text {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #03294a;
+}
+.card .number,
+.card .deadline {
+  font-size: 0.9rem;
+  color: #05305e;
+}
+
+/* ボタン類（カード内） */
+.card button,
+.card .delete {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+/* 修正ボタン */
+.card button {
+  background-color: #007bff;
+  color: #fff;
+  align-self: flex-start;
+}
+.card button:hover {
+  background-color: #005ecb;
+  transform: translateY(-2px);
+}
+
+/* 削除 */
+.card .delete {
+  background-color: #f44336;
+  color: #fff;
+  align-self: flex-end;
+}
+.card .delete:hover {
+  background-color: #c62828;
+}
+
+/* 編集フォーム */
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.edit-form input {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+/* 色分け（期限） */
+.card.glay {
+  background-color: #6c757d;
+  color: white;
+}
+.card.red {
+  background-color: #dc3545;
+  color: white;
+}
+.card.yellow {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+/* --- 新規カード入力欄（Listの下） --- */
+/* List コンポーネントでは .input-container / .input-todo / .input-button を使用 */
+.list-footer {
+  margin-top: 12px;
 }
 .input-container {
   display: flex;
-  justify-content: space-between;
+  gap: 10px;
   align-items: center;
+  flex-wrap: wrap;
 }
 .input-container .input-todo {
-  height: 2em;
-  width: 75%;
-  padding: 4px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
   background-color: #fff;
-  border-radius: 4px;
-  box-shadow: 0 1px 0 #ccc;
-  font-size: 1em;
-  border-width: 0px;
+  font-size: 0.95rem;
+  min-width: 140px;
+  box-shadow: inset 0 2px 6px rgba(2, 6, 23, 0.02);
 }
-.input-container .input-todo:focus {
-  outline: 0;
+.input-container input[type="date"] {
+  padding: 8px;
+  min-width: 160px;
 }
-.input-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 34px;
-  padding: 0 12px;
-  margin-top: 8px;
+
+/* 追加ボタン（List内） */
+.input-container .input-button {
+  padding: 10px 14px;
+  border-radius: 10px;
+  background-color: #007bff;
   color: #fff;
-  background-color: #2ab643;
-  border-radius: 6px;
-  border-bottom: 1px solid #2aa138;
   cursor: pointer;
-  user-select: none;
+  font-weight: 800;
+  box-shadow: 0 8px 18px rgba(2, 85, 204, 0.12);
+  transition: transform 0.12s, background-color 0.12s;
 }
-.input-container .input-button:active {
-  transform: translateY(2px);
-}
-.list-footer {
-  margin-top: 8px;
-}
-/* ドラッグ可能なリストだけを囲むエリア */
-.lists-droppable-area {
-  display: flex; /* この中身（リスト）を横並びにする */
-  gap: 8px;
+.input-container .input-button:hover {
+  transform: translateY(-3px);
+  background-color: #005ecb;
 }
 
-/* リスト追加フォームのコンテナ */
+/* --- 追加リストフォーム（右側） --- */
 .add-list-form-container {
-  flex-shrink: 0; /* 縮まないようにする */
-  width: 320px; /* フォームの幅に合わせて調整 */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 220px;
   margin-left: 8px;
+  align-self: flex-start;
+  z-index: 2;
 }
-
-/* 既存の new-list と input-button のスタイルが適用されるように調整 */
 .add-list-form-container .new-list {
-  width: 100%;
-  margin: 0;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background-color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
 }
 .add-list-form-container .input-button {
-  width: 100%;
+  padding: 10px;
+  text-align: center;
+  border-radius: 12px;
+  background-color: #007bff;
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(2, 85, 204, 0.12);
+}
+
+/* レスポンシブ微調整 */
+@media (max-width: 900px) {
+  .list-container {
+    padding: 18px;
+  }
+  .input-container {
+    gap: 8px;
+  }
+  .input-container .input-todo {
+    min-width: 120px;
+  }
+  .add-list-form-container {
+    min-width: 160px;
+  }
 }
