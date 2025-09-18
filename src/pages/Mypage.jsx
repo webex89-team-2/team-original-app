@@ -346,7 +346,6 @@ const Mypage = () => {
   return (
     <>
       <Header />
-      <button onClick={() => navigate("/signin")}>ログアウト</button>
 
       {/* このdivが、リストエリアと追加フォームを横に並べる親コンテナ */}
       <div className="main-container">

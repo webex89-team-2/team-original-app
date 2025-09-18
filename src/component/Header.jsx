@@ -6,7 +6,7 @@ export const Header = () => {
   return (
     <header className="header">
       <Link to="/mypage" className="logo">
-        My App
+        ストック番長
       </Link>
       <nav>
         <ul className="nav-links">

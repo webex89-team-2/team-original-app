@@ -96,9 +96,9 @@ export function List({
               setInputDead(diffDays);
             }}
           />
-          <div className="input-button" onClick={onAddCard}>
+          <button className="input-button" onClick={onAddCard}>
             追加
-          </div>
+          </button>
         </div>
       </div>
     </>
