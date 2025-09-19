@@ -1,4 +1,4 @@
-Trello.css * {
+* {
   box-sizing: border-box;
 }
 body {
@@ -29,13 +29,13 @@ header {
   padding: 52px 12px 12px 12px;
   overflow-x: auto;
   background-color: #0076c2;
+  gap: 8px; /* ★★★ リストと追加フォームの間の隙間をここで管理 ★★★ */
 }
 .new-list {
+  width: 100%; /* 親要素に合わせる */
   height: 34px;
-  width: 320px;
-  max-width: 60vw;
   padding: 0 10px;
-  margin: 8px 8px 0 12px;
+  margin: 0;
   border: none;
   border-radius: 6px;
   box-shadow: 0 1px 0 #ccc;
@@ -47,10 +47,14 @@ header {
   padding: 8px;
   border-radius: 4px;
   background-color: #e2e4e6;
+  flex-shrink: 0; /* ★★★ 縮まないように指定 ★★★ */
 }
-.list-container:nth-child(n + 2) {
+
+/* ★★★ この不要になったスタイルを削除 ★★★ */
+/* .list-container:nth-child(n + 2) {
   margin-left: 8px;
-}
+} */
+
 .list-header {
   height: 60px;
   padding: 8px 0px 0px 4px;
@@ -69,31 +73,15 @@ header {
   border-radius: 4px;
   box-shadow: 0 1px 0 #ccc;
 }
-
 .card.red {
-  position: relative;
-  padding: 4px;
   background-color: #ffcccc;
-  border-radius: 4px;
-  box-shadow: 0 1px 0 #ccc;
 }
-
 .card.yellow {
-  position: relative;
-  padding: 4px;
   background-color: #fff3b0;
-  border-radius: 4px;
-  box-shadow: 0 1px 0 #ccc;
 }
-
 .card.glay {
-  position: relative;
-  padding: 4px;
   background-color: #666666;
-  border-radius: 4px;
-  box-shadow: 0 1px 0 #ccc;
 }
-
 .card:nth-of-type(n + 2) {
   margin-top: 8px;
 }
@@ -124,12 +112,13 @@ header {
 }
 .input-container {
   display: flex;
-  justify-content: space-between;
+  gap: 5px; /* ★★★ 隙間をgapで管理 ★★★ */
   align-items: center;
 }
+
+/* ★★★ width: 75% を削除 ★★★ */
 .input-container .input-todo {
   height: 2em;
-  width: 75%;
   padding: 4px;
   background-color: #fff;
   border-radius: 4px;
@@ -140,6 +129,16 @@ header {
 .input-container .input-todo:focus {
   outline: 0;
 }
+
+/* ★★★ 以下を追記 ★★★ */
+.input-container input[type="text"] {
+  flex: 1;
+  min-width: 60px;
+}
+.input-container input[type="number"] {
+  width: 55px;
+}
+
 .input-button {
   display: inline-flex;
   align-items: center;
@@ -154,30 +153,27 @@ header {
   cursor: pointer;
   user-select: none;
 }
+.input-container .input-button {
+  margin-top: 0; /* ★★★ input-container内ではmarginをリセット ★★★ */
+}
 .input-container .input-button:active {
   transform: translateY(2px);
 }
 .list-footer {
   margin-top: 8px;
 }
-/* ドラッグ可能なリストだけを囲むエリア */
+
+/* ★★★ ドラッグ可能なリストエリアと追加フォーム用のスタイルを整理 ★★★ */
 .lists-droppable-area {
-  display: flex; /* この中身（リスト）を横並びにする */
-  gap: 8px;
+  display: flex;
+  gap: 8px; /* リスト間の隙間 */
 }
 
-/* リスト追加フォームのコンテナ */
 .add-list-form-container {
-  flex-shrink: 0; /* 縮まないようにする */
-  width: 320px; /* フォームの幅に合わせて調整 */
-  margin-left: 8px;
+  width: 300px; /* 他のリストと同じ幅 */
+  flex-shrink: 0;
 }
 
-/* 既存の new-list と input-button のスタイルが適用されるように調整 */
-.add-list-form-container .new-list {
-  width: 100%;
-  margin: 0;
-}
 .add-list-form-container .input-button {
   width: 100%;
 }
