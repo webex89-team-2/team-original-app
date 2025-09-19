@@ -1,179 +1,312 @@
 * {
   box-sizing: border-box;
 }
+html,
 body {
+  height: 100%;
   margin: 0;
-  overflow: hidden;
-  background-color: #0076c2;
+  padding: 0;
+  font-family: "Noto Sans JP", sans-serif;
+  background-color: #cce0f5; /* mainブランチの背景色を採用 */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+  overflow-x: hidden; /* mainブランチのoverflowを採用 */
 }
-header {
-  position: absolute;
-  top: 0px;
-  width: 100%;
+
+/* mainブランチのデザイン（水玉背景）をそのまま採用 */
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(30px);
+  mix-blend-mode: normal;
+  opacity: 0.95;
 }
+
+body::before {
+  width: 560px;
+  height: 560px;
+  left: -180px;
+  top: -220px;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(2, 98, 207, 0.2) 0%,
+    rgba(2, 98, 207, 0.12) 40%,
+    rgba(2, 98, 207, 0.06) 100%
+  );
+}
+
+body::after {
+  width: 720px;
+  height: 720px;
+  right: -260px;
+  bottom: -260px;
+  background: radial-gradient(
+    circle at 70% 70%,
+    rgba(0, 123, 255, 0.16) 0%,
+    rgba(0, 123, 255, 0.1) 45%,
+    rgba(0, 123, 255, 0.04) 100%
+  );
+}
+
+header,
+.Header,
 .header-title {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 40px;
-  font-size: 1.5em;
-  background-color: #0064a5;
-  color: #7fb1d2;
+  position: relative;
+  z-index: 2;
 }
+
+/* --- メインコンテナ --- */
 .main-container {
   display: flex;
-  flex-wrap: nowrap;
-  align-items: flex-start;
-  width: 100vw;
-  height: 100vh;
-  padding: 52px 12px 12px 12px;
-  overflow-x: auto;
-  background-color: #0076c2;
-  gap: 8px; /* ★★★ リストと追加フォームの間の隙間をここで管理 ★★★ */
-}
-.new-list {
-  width: 100%; /* 親要素に合わせる */
-  height: 34px;
-  padding: 0 10px;
-  margin: 0;
-  border: none;
-  border-radius: 6px;
-  box-shadow: 0 1px 0 #ccc;
-  font-size: 14px;
-}
-.list-container {
-  min-width: 300px;
-  width: 300px;
-  padding: 8px;
-  border-radius: 4px;
-  background-color: #e2e4e6;
-  flex-shrink: 0; /* ★★★ 縮まないように指定 ★★★ */
-}
-
-/* ★★★ この不要になったスタイルを削除 ★★★ */
-/* .list-container:nth-child(n + 2) {
-  margin-left: 8px;
-} */
-
-.list-header {
-  height: 60px;
-  padding: 8px 0px 0px 4px;
-  font-weight: bold;
-  font-size: 0.9em;
-}
-.cards-container {
-  max-height: calc(100vh - 200px);
-  margin-top: 4px;
-  overflow-y: auto;
-}
-.card {
+  align-items: flex-start; /* sekitoブランチのalign-itemsを採用 */
+  overflow-x: auto; /* 両方のブランチで共通。横スクロールを維持 */
+  height: calc(100vh - 64px); /* mainブランチの高さを採用 */
+  padding: 20px; /* mainブランチのpaddingを採用 */
+  box-sizing: border-box;
   position: relative;
-  padding: 4px;
-  background-color: #fff;
-  border-radius: 4px;
-  box-shadow: 0 1px 0 #ccc;
+  z-index: 1;
+  gap: 20px; /* mainブランチのgapを採用 */
 }
-.card.red {
-  background-color: #ffcccc;
+
+/* --- リスト群（横並び） --- */
+.lists-droppable-area {
+  display: flex;
+  gap: 20px; /* mainブランチのgapを採用 */
+  align-items: flex-start; /* sekitoブランチのalign-itemsをこちらに適用 */
 }
-.card.yellow {
-  background-color: #fff3b0;
+
+/* 各リストコンテナ */
+.list-container {
+  width: 320px; /* sekitoブランチの幅に近い固定幅を設定 */
+  flex-shrink: 0; /* sekitoブランチの縮まない設定を採用 */
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 16px;
+  padding: 24px;
+  box-sizing: border-box;
+  box-shadow: 0 10px 30px rgba(6, 37, 81, 0.12);
+  display: flex;
+  flex-direction: column;
 }
-.card.glay {
-  background-color: #666666;
+
+/* リスト内の見出し */
+.list-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 8px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
-.card:nth-of-type(n + 2) {
-  margin-top: 8px;
+.list-header .list-title,
+.list-container h2 {
+  font-size: 1.75rem;
+  color: #00366b;
+  font-weight: 1000;
 }
-.card:last-child {
-  margin-bottom: 1px;
-  word-wrap: break-word;
+
+/* リスト削除ボタン（下側） */
+.list-container > button {
+  margin-top: 12px;
+  align-self: flex-end;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 10px;
+  background-color: #dc3545;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 12px rgba(220, 53, 69, 0.18);
+  transition: transform 0.12s ease, background-color 0.12s;
+}
+.list-container > button:hover {
+  background-color: #b82936;
+}
+
+/* --- カードコンテナ --- */
+.cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+  flex: 1 1 auto;
+  overflow-y: auto; /* sekitoブランチのスクロール設定を維持 */
+  padding-right: 6px;
+}
+
+/* =============================
+   カードデザイン
+   ============================= */
+.card {
+  background-color: rgba(0, 123, 255, 0.12);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 8px;
+  box-shadow: 0 6px 14px rgba(4, 28, 66, 0.06);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  cursor: grab;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.card:active {
+  transform: scale(1.02);
+  cursor: grabbing;
 }
 .card .text {
-  overflow-x: hidden;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #03294a;
 }
-.card:hover {
-  background-color: #edeff0;
-  border-bottom-color: #d6dadc;
+.card .number,
+.card .deadline {
+  font-size: 1.2rem;
+  color: #05305e;
 }
-.card:hover .delete {
-  position: absolute;
-  bottom: 4px;
-  right: 4px;
-  z-index: 16;
-  opacity: 0.5;
-  color: #f00;
+
+.card button,
+.card .delete {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 700;
 }
-.card:hover .delete:after {
-  content: "削除";
+
+.card button {
+  background-color: #007bff;
+  color: #fff;
 }
-.card:hover .delete:hover {
-  opacity: 1;
+.card button:hover {
+  background-color: #005ecb;
+  transform: translateY(-2px);
+}
+
+.card .delete {
+  background-color: #f44336;
+  color: #fff;
+}
+.card .delete:hover {
+  background-color: #c62828;
+  transform: translateY(-2px);
+}
+.card-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.edit-form input {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+/* 色分け（期限） - mainのデザインを尊重しつつ、sekitoの色分けも適用 */
+.card.glay {
+  background-color: #6c757d;
+  color: white;
+}
+.card.red {
+  background-color: #dc3545;
+  color: white;
+}
+.card.yellow {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+/* --- 新規カード入力欄（Listの下） --- */
+.list-footer {
+  margin-top: 12px;
 }
 .input-container {
   display: flex;
-  gap: 5px; /* ★★★ 隙間をgapで管理 ★★★ */
+  gap: 10px; /* mainブランチのgapを採用 */
   align-items: center;
+  flex-wrap: wrap;
 }
 
-/* ★★★ width: 75% を削除 ★★★ */
 .input-container .input-todo {
-  height: 2em;
-  padding: 4px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
   background-color: #fff;
-  border-radius: 4px;
-  box-shadow: 0 1px 0 #ccc;
-  font-size: 1em;
-  border-width: 0px;
-}
-.input-container .input-todo:focus {
-  outline: 0;
-}
-
-/* ★★★ 以下を追記 ★★★ */
-.input-container input[type="text"] {
+  font-size: 0.95rem;
+  box-shadow: inset 0 2px 6px rgba(2, 6, 23, 0.02);
+  /* sekitoブランチの個別幅指定を統合 */
   flex: 1;
-  min-width: 60px;
+  min-width: 80px;
 }
 .input-container input[type="number"] {
-  width: 55px;
+  flex: 0 0 60px; /* 個数入力欄は幅を固定 */
+}
+.input-container input[type="date"] {
+  flex: 0 0 150px; /* 日付入力欄は幅を固定 */
+  padding: 8px;
 }
 
-.input-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 34px;
-  padding: 0 12px;
-  margin-top: 8px;
-  color: #fff;
-  background-color: #2ab643;
-  border-radius: 6px;
-  border-bottom: 1px solid #2aa138;
-  cursor: pointer;
-  user-select: none;
-}
+/* 追加ボタン（List内） */
 .input-container .input-button {
-  margin-top: 0; /* ★★★ input-container内ではmarginをリセット ★★★ */
+  padding: 10px 14px;
+  border-radius: 10px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 800;
+  box-shadow: 0 8px 18px rgba(2, 85, 204, 0.12);
+  transition: transform 0.12s, background-color 0.12s;
 }
-.input-container .input-button:active {
-  transform: translateY(2px);
-}
-.list-footer {
-  margin-top: 8px;
+.input-container .input-button:hover {
+  transform: translateY(-3px);
+  background-color: #005ecb;
 }
 
-/* ★★★ ドラッグ可能なリストエリアと追加フォーム用のスタイルを整理 ★★★ */
-.lists-droppable-area {
-  display: flex;
-  gap: 8px; /* リスト間の隙間 */
-}
-
+/* --- 追加リストフォーム（右側） --- */
 .add-list-form-container {
-  width: 300px; /* 他のリストと同じ幅 */
-  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 320px; /* sekitoブランチの幅指定を統合 */
+  flex-shrink: 0; /* sekitoブランチの設定を採用 */
+  align-self: flex-start;
+  z-index: 2;
+}
+.add-list-form-container .new-list {
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background-color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
+}
+.add-list-form-container .input-button {
+  padding: 10px;
+  text-align: center;
+  border-radius: 12px;
+  background-color: #007bff;
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(2, 85, 204, 0.12);
 }
 
-.add-list-form-container .input-button {
-  width: 100%;
+/* レスポンシブ微調整 */
+@media (max-width: 900px) {
+  .list-container {
+    padding: 18px;
+  }
+  .input-container {
+    gap: 8px;
+  }
 }

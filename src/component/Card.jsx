@@ -89,10 +89,10 @@ export function Card({ card, onDeleteCard, onUpdateCard }) {
               ? "消費期限：本日まで"
               : `消費期限切れ！${Math.abs(daysRemaining)}日経過`}
           </div>
-          <button onClick={() => setIsEditing(true)}>修正</button>
-          <div className="delete" onClick={() => onDeleteCard(card.id)}>
-            削除
-          </div>
+            {/* <button onClick={() => setIsEditing(true)}>修正</button>
+            <div className="delete" onClick={() => onDeleteCard(card.id)}>
+              削除
+            </div> */}
         </>
       )}
     </div>

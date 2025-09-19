@@ -19,7 +19,7 @@ export default function SignUp() {
       alert("新規登録に成功しました");
       navigate("/mypage");
     } catch (error) {
-      alert(error.message);
+      alert("新規登録に失敗しました");
     }
   };
 
@@ -31,7 +31,8 @@ export default function SignUp() {
       alert("Googleで新規登録しました");
       navigate("/mypage");
     } catch (error) {
-      alert(error.message);
+      // alert(error.message);
+      alert("新規登録に失敗しました");
     }
   };
 
