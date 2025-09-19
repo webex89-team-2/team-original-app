@@ -1,9 +1,3 @@
-/* =============================
-   Trello.css — 全部まとめて
-   ※ そのまま上書きしてください
-   ============================= */
-
-/* --- リセット / 全体 --- */
 * {
   box-sizing: border-box;
 }
@@ -13,26 +7,26 @@ body {
   margin: 0;
   padding: 0;
   font-family: "Noto Sans JP", sans-serif;
-  background-color: #cce0f5; /* ベースの淡い青 */
+  background-color: #cce0f5; /* mainブランチの背景色を採用 */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   position: relative;
-  overflow-x: hidden;
+  overflow-x: hidden; /* mainブランチのoverflowを採用 */
 }
 
+/* mainブランチのデザイン（水玉背景）をそのまま採用 */
 body::before,
 body::after {
   content: "";
-  position: fixed; /* スクロールしても画面に固定 */
+  position: fixed;
   border-radius: 50%;
-  pointer-events: none; /* クリックを邪魔しない */
-  z-index: 0; /* コンテンツより下、背景より上 */
+  pointer-events: none;
+  z-index: 0;
   filter: blur(30px);
   mix-blend-mode: normal;
   opacity: 0.95;
 }
 
-/* 左上の大きな水玉 */
 body::before {
   width: 560px;
   height: 560px;
@@ -46,7 +40,6 @@ body::before {
   );
 }
 
-/* 右下の大きな水玉 */
 body::after {
   width: 720px;
   height: 720px;
@@ -60,49 +53,44 @@ body::after {
   );
 }
 
-/* ヘッダーとメインは水玉より上に */
 header,
 .Header,
 .header-title {
-  position: relative; /* header が absolute なら z-index のみ設定 */
+  position: relative;
   z-index: 2;
 }
 
 /* --- メインコンテナ --- */
 .main-container {
   display: flex;
-  flex-direction: row;
-  gap: 20px;
-  align-items: stretch;
-  overflow-x: auto; /* 横スクロール */
-  height: calc(100vh - 64px); /* ヘッダーの高さに合わせて調整 */
-  padding: 20px;
+  align-items: flex-start; /* sekitoブランチのalign-itemsを採用 */
+  overflow-x: auto; /* 両方のブランチで共通。横スクロールを維持 */
+  height: calc(100vh - 64px); /* mainブランチの高さを採用 */
+  padding: 20px; /* mainブランチのpaddingを採用 */
   box-sizing: border-box;
   position: relative;
   z-index: 1;
+  gap: 20px; /* mainブランチのgapを採用 */
 }
 
 /* --- リスト群（横並び） --- */
 .lists-droppable-area {
   display: flex;
-  flex-direction: row;
-  gap: 20px;
-  align-items: stretch;
+  gap: 20px; /* mainブランチのgapを採用 */
+  align-items: flex-start; /* sekitoブランチのalign-itemsをこちらに適用 */
 }
 
-/* 各リストコンテナ（画面1枚分） */
+/* 各リストコンテナ */
 .list-container {
-  flex: 0 0 100vw; /* ビューポート幅いっぱいに */
-  height: 100%;
-  background: rgba(255, 255, 255, 0.92); /* 透け感があり水玉見える */
+  width: 320px; /* sekitoブランチの幅に近い固定幅を設定 */
+  flex-shrink: 0; /* sekitoブランチの縮まない設定を採用 */
+  background: rgba(255, 255, 255, 0.92);
   border-radius: 16px;
   padding: 24px;
   box-sizing: border-box;
   box-shadow: 0 10px 30px rgba(6, 37, 81, 0.12);
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
-  min-width: 320px; /* 極端に狭くならないように */
 }
 
 /* リスト内の見出し */
@@ -136,7 +124,6 @@ header,
   transition: transform 0.12s ease, background-color 0.12s;
 }
 .list-container > button:hover {
-  /* transform: translateY(-2px); */
   background-color: #b82936;
 }
 
@@ -147,14 +134,15 @@ header,
   gap: 12px;
   margin-top: 12px;
   flex: 1 1 auto;
-  padding-right: 6px; /* スクロールバーと被らない余白 */
+  overflow-y: auto; /* sekitoブランチのスクロール設定を維持 */
+  padding-right: 6px;
 }
 
 /* =============================
-   カードデザイン
-   ============================= */
+   カードデザイン
+   ============================= */
 .card {
-  background-color: rgba(0, 123, 255, 0.12); /* 青みのある淡いカード */
+  background-color: rgba(0, 123, 255, 0.12);
   border-radius: 12px;
   padding: 14px;
   margin-bottom: 8px;
@@ -165,14 +153,10 @@ header,
   flex-direction: column;
   gap: 6px;
 }
-
-/* drag state */
 .card:active {
   transform: scale(1.02);
   cursor: grabbing;
 }
-
-/* テキスト類 */
 .card .text {
   font-weight: 700;
   font-size: 1.5rem;
@@ -184,7 +168,6 @@ header,
   color: #05305e;
 }
 
-/* ボタン類（カード内） */
 .card button,
 .card .delete {
   padding: 8px 10px;
@@ -195,37 +178,30 @@ header,
   font-weight: 700;
 }
 
-/* 修正ボタン */
 .card button {
   background-color: #007bff;
   color: #fff;
-  /* align-self: flex-start; */
 }
 .card button:hover {
   background-color: #005ecb;
   transform: translateY(-2px);
 }
 
-/* 削除 */
 .card .delete {
   background-color: #f44336;
   color: #fff;
-  /* align-self: flex-end; */
 }
 .card .delete:hover {
   background-color: #c62828;
-    transform: translateY(-2px);
+  transform: translateY(-2px);
 }
-
 .card-box {
   display: flex;
-  align-items: center; /* ボタンのY位置を揃える */
+  align-items: center;
   gap: 8px;
   margin-top: 6px;
 }
 
-
-/* 編集フォーム */
 .edit-form {
   display: flex;
   flex-direction: column;
@@ -237,7 +213,7 @@ header,
   border: 1px solid rgba(0, 0, 0, 0.12);
 }
 
-/* 色分け（期限） */
+/* 色分け（期限） - mainのデザインを尊重しつつ、sekitoの色分けも適用 */
 .card.glay {
   background-color: #6c757d;
   color: white;
@@ -252,28 +228,33 @@ header,
 }
 
 /* --- 新規カード入力欄（Listの下） --- */
-/* List コンポーネントでは .input-container / .input-todo / .input-button を使用 */
 .list-footer {
   margin-top: 12px;
 }
 .input-container {
   display: flex;
-  gap: 10px;
+  gap: 10px; /* mainブランチのgapを採用 */
   align-items: center;
   flex-wrap: wrap;
 }
+
 .input-container .input-todo {
   padding: 10px;
   border-radius: 10px;
   border: 1px solid rgba(0, 0, 0, 0.08);
   background-color: #fff;
   font-size: 0.95rem;
-  min-width: 140px;
   box-shadow: inset 0 2px 6px rgba(2, 6, 23, 0.02);
+  /* sekitoブランチの個別幅指定を統合 */
+  flex: 1;
+  min-width: 80px;
+}
+.input-container input[type="number"] {
+  flex: 0 0 60px; /* 個数入力欄は幅を固定 */
 }
 .input-container input[type="date"] {
+  flex: 0 0 150px; /* 日付入力欄は幅を固定 */
   padding: 8px;
-  min-width: 160px;
 }
 
 /* 追加ボタン（List内） */
@@ -297,8 +278,8 @@ header,
   display: flex;
   flex-direction: column;
   gap: 8px;
-  min-width: 220px;
-  margin-left: 8px;
+  width: 320px; /* sekitoブランチの幅指定を統合 */
+  flex-shrink: 0; /* sekitoブランチの設定を採用 */
   align-self: flex-start;
   z-index: 2;
 }
@@ -327,11 +308,5 @@ header,
   }
   .input-container {
     gap: 8px;
-  }
-  .input-container .input-todo {
-    min-width: 120px;
-  }
-  .add-list-form-container {
-    min-width: 160px;
   }
 }

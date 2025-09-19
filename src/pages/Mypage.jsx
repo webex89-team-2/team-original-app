@@ -9,15 +9,18 @@ import {
   getDocs,
   addDoc,
   deleteDoc,
+  getDoc,
   doc,
   updateDoc,
   writeBatch,
   query,
   where,
   orderBy,
+  Timestamp,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getFunctions, httpsCallable } from "firebase/functions";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
 const Mypage = () => {
@@ -25,6 +28,12 @@ const Mypage = () => {
   const [memos, setMemos] = useState([]);
   const [newListTitle, setNewListTitle] = useState("");
   const [uid, setUid] = useState(null); // userIDの変数
+  const [settings, setSettings] = useState({
+    enabled: false,
+    itemThreshold: 3,
+    daysBefore: 3,
+    notificationTime: "09:00",
+  }); // 通知設定管理State
 
   useEffect(() => {
     const auth = getAuth();
@@ -39,10 +48,22 @@ const Mypage = () => {
     return () => unSub(); // クリーンアップ（監視解除）
   }, [navigate]);
 
+  // ユーザの通知設定を読み込む
+  useEffect(() => {
+    if (!uid) return;
+    const fetchSettings = async () => {
+      const userDocRef = doc(db, "users", uid);
+      const docSnap = await getDoc(userDocRef);
+      if (docSnap.exists() && docSnap.data().notificationSettings) {
+        setSettings(docSnap.data().notificationSettings);
+      }
+    };
+    fetchSettings();
+  }, [uid]);
+
+  // データを取得する関数
   useEffect(() => {
     if (!uid) return; // uidが取得できるまで実行しない
-
-    // データを取得する関数
     const getFoodsAndLists = async () => {
       try {
         // ユーザーのリストコレクションへの参照
@@ -98,22 +119,19 @@ const Mypage = () => {
 
           const formattedItems = itemsInList.map((item) => ({
             ...item,
-            expirationDate: Math.ceil(
-              (new Date(item.expiresAt.toDate()) - new Date()) /
-                (1000 * 60 * 60 * 24)
-            ),
+            expiresAt: item.expiresAt.toDate(),
           }));
+
           return { ...list, items: formattedItems };
         });
-
         setMemos(combinedMemos);
       } catch (error) {
         console.error("Error fetching documents:", error);
       }
     };
-
     getFoodsAndLists();
-  }, [uid]); // uidが変わるたびにデータを再取得
+  }, [uid]);
+  // uidが変わるたびにデータを再取得
 
   // リスト追加ボタン（Firebase反映版）
   const handleAddList = async () => {
@@ -227,9 +245,7 @@ const Mypage = () => {
   // カード追加ボタン（Firebase反映版）
   const handleAddCard = async (listId, newItem) => {
     try {
-      const newExpiresAt = new Date(
-        new Date().getTime() + newItem.expirationDate * 24 * 60 * 60 * 1000
-      );
+      const newExpiresAt = Timestamp.fromDate(new Date(newItem.expirationDate));
       const docRef = await addDoc(collection(db, "users", uid, "foods"), {
         location: memos.find((memo) => memo.id === listId).storageLocation,
         name: newItem.name,
@@ -237,21 +253,16 @@ const Mypage = () => {
         expiresAt: newExpiresAt,
         createdAt: new Date(),
       });
-
       setMemos((prevMemos) =>
         prevMemos.map((list) => {
           if (list.id === listId) {
             const updatedItem = {
               ...newItem,
               id: docRef.id,
-              expiresAt: newExpiresAt,
+              expiresAt: newExpiresAt.toDate(),
             };
             const newItems = [...list.items, updatedItem];
-            newItems.sort(
-              (a, b) =>
-                (a.expiresAt.toDate ? a.expiresAt.toDate() : a.expiresAt) -
-                (b.expiresAt.toDate ? b.expiresAt.toDate() : b.expiresAt)
-            );
+            newItems.sort((a, b) => a.expiresAt - b.expiresAt);
             return { ...list, items: newItems };
           }
           return list;
@@ -265,53 +276,31 @@ const Mypage = () => {
   // カード修正ボタン（Firebase反映版）
   const handleUpdateCard = async (listId, updatedItem) => {
     try {
-      const newExpiresAt = new Date( // 新しい期限日を計算
-        new Date().getTime() + updatedItem.expirationDate * 24 * 60 * 60 * 1000
+      const newExpiresAt = Timestamp.fromDate(
+        new Date(updatedItem.expirationDate)
       );
-
-      // 1. Firebaseのドキュメントを更新
       const foodRef = doc(db, "users", uid, "foods", updatedItem.id);
       await updateDoc(foodRef, {
         name: updatedItem.name,
         amount: updatedItem.amount,
-        expiresAt: newExpiresAt, // 計算した日付で更新
+        expiresAt: newExpiresAt,
       });
-
-      // 2. 画面上のステートを更新
-      setMemos((prevMemos) => {
-        return prevMemos.map((list) => {
+      setMemos((prevMemos) =>
+        prevMemos.map((list) => {
           if (list.id === listId) {
-            // ソートに必要な`expiresAt`をupdatedItemに追加した完全なオブジェクトを作成
             const itemWithFullDate = {
               ...updatedItem,
-              expiresAt: newExpiresAt,
+              expiresAt: newExpiresAt.toDate(),
             };
-
-            // 更新されたアイテムをリストに反映
             const newItems = list.items.map((item) =>
               item.id === itemWithFullDate.id ? itemWithFullDate : item
             );
-
-            // すぐにソートを実行
-            newItems.sort((a, b) => {
-              // FirestoreのTimestamp型とDate型を両方扱えるようにする
-              const dateA = a.expiresAt.toDate
-                ? a.expiresAt.toDate()
-                : a.expiresAt;
-              const dateB = b.expiresAt.toDate
-                ? b.expiresAt.toDate()
-                : b.expiresAt;
-              return dateA - dateB;
-            });
-
-            return {
-              ...list,
-              items: newItems,
-            };
+            newItems.sort((a, b) => a.expiresAt - b.expiresAt);
+            return { ...list, items: newItems };
           }
           return list;
-        });
-      });
+        })
+      );
     } catch (e) {
       console.error("Error updating document: ", e);
     }
@@ -343,10 +332,122 @@ const Mypage = () => {
     await batch.commit(); // Firestoreへの一括更新を実行
   };
 
+  // 通知設定保存関数
+  const handleSaveSettings = async () => {
+    if (!uid) return;
+    try {
+      const userDocRef = doc(db, "users", uid);
+      await setDoc(
+        userDocRef,
+        { notificationSettings: settings },
+        { merge: true }
+      );
+      alert("設定を保存しました！");
+    } catch (error) {
+      console.error("設定の保存に失敗しました:", error);
+      alert("設定の保存に失敗しました。");
+    }
+  };
+
+  // 通知設定入力反映関数
+  const handleSettingChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setSettings((prev) => ({
+      ...prev,
+      [name]:
+        type === "checkbox" ? checked : type === "time" ? value : Number(value),
+    }));
+  };
+
+  // テストメール関数
+  const handleSendTestEmail = async () => {
+    const functions = getFunctions();
+    const sendTestEmail = httpsCallable(functions, "sendTestEmail");
+    try {
+      await sendTestEmail();
+      alert(
+        "テストメールの送信をリクエストしました。受信トレイを確認してください。"
+      );
+    } catch (error) {
+      console.error("関数の呼び出しに失敗しました:", error);
+      alert(
+        "テストメールの送信に失敗しました。コンソールでエラーを確認してください。"
+      );
+    }
+  };
+
   return (
     <>
       <Header />
-
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          flexWrap: "wrap",
+          padding: "10px",
+        }}
+      >
+        <div style={{ padding: "0 10px" }}>
+          <button onClick={handleSendTestEmail}>テストメールを送信</button>
+        </div>
+        <div
+          className="settings-container"
+          style={{
+            padding: "10px",
+            border: "1px solid #ccc",
+            borderRadius: "8px",
+          }}
+        >
+          <h2 style={{ marginTop: 0 }}>通知設定</h2>
+          <div>
+            <label>
+              <input
+                type="checkbox"
+                name="enabled"
+                checked={settings.enabled}
+                onChange={handleSettingChange}
+              />{" "}
+              通知メールを有効にする
+            </label>
+          </div>
+          <div>
+            <label>
+              <input
+                type="number"
+                name="itemThreshold"
+                value={settings.itemThreshold}
+                onChange={handleSettingChange}
+                min="1"
+              />{" "}
+              個以上の食品が同日に期限切れになる場合
+            </label>
+          </div>
+          <div>
+            <label>
+              <input
+                type="number"
+                name="daysBefore"
+                value={settings.daysBefore}
+                onChange={handleSettingChange}
+                min="1"
+              />{" "}
+              日前に通知する
+            </label>
+          </div>
+          <div>
+            <label>
+              通知時間：
+              <input
+                type="time"
+                name="notificationTime"
+                value={settings.notificationTime}
+                onChange={handleSettingChange}
+              />
+            </label>
+          </div>
+          <button onClick={handleSaveSettings}>設定を保存</button>
+        </div>
+      </div>
       {/* このdivが、リストエリアと追加フォームを横に並べる親コンテナ */}
       <div className="main-container">
         <DragDropContext onDragEnd={handleDragEnd}>
